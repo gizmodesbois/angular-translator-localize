@@ -1,0 +1,9 @@
+[{
+    "name": "header",
+    "value": "Titre de la bannière",
+    "description": "Text du titre du haut de page"
+}, {
+    "name": "footer",
+    "value": "Titre du bas de page",
+    "description": "Text du titre du bas de page"
+}]

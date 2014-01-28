@@ -1,0 +1,9 @@
+[{
+    "name": "header",
+    "value": "Header title",
+    "description": "Text for the header title"
+}, {
+    "name": "footer",
+    "value": "Footer title",
+    "description": "Text for the footer title"
+}]
