@@ -13,12 +13,11 @@ angular
     .factory('translator', ['$http', '$rootScope', '$window', '$filter',
         function($http, $rootScope, $window, $filter) {
             var translator = {
-                language: '',
                 dictionary: [],
-                dictionaryVersion: '0.0.1',
+                dictionaryVersion: '0.0.2',
                 url: undefined,
                 init: function() {
-                    var url = translator.url || translator.buildUrl();
+                    var url = translator.restoreUrl() || translator.buildUrl();
                     if (!sessionStorage.dictionary || !sessionStorage.dictionaryVersion || (sessionStorage.dictionaryVersion != translator.dictionaryVersion)) {
                         $http({
                             method: 'GET',
@@ -39,34 +38,20 @@ angular
                     translator.dictionary = angular.fromJson(sessionStorage.dictionary);
                     $rootScope.$broadcast('translatorDictionaryUpdated');
                 },
-                saveLanguage: function() {
-                    sessionStorage.language = angular.toJson(translator.language);
-                },
-                restoreLanguage: function() {
-                    translator.language = angular.fromJson(sessionStorage.language);
-                },
-                saveUrl: function() {
-                    sessionStorage.url = 'languages/dictionary-' + translator.language + '.json';
+                saveUrl: function(lang) {
+                    return sessionStorage.url = 'languages/dictionary-' + lang + '.json';
                 },
                 restoreUrl: function() {
                     return sessionStorage.url;
                 },
                 buildUrl: function() {
-                    if (!translator.language && !sessionStorage.language) {
-                        var lang, aLang;
-                        if ($window.navigator && $window.navigator.userAgent && (aLang = $window.navigator.userAgent.match(/android.*\W(\w\w)-(\w\w)\W/i))) {
-                            lang = aLang[1];
-                        } else {
-                            lang = $window.navigator.userLanguage || $window.navigator.language;
-                        }
-                        translator.language = lang;
-                        translator.saveLanguage();
-                        translator.saveUrl();
+                    var lang, aLang;
+                    if ($window.navigator && $window.navigator.userAgent && (aLang = $window.navigator.userAgent.match(/android.*\W(\w\w)-(\w\w)\W/i))) {
+                        lang = aLang[1];
                     } else {
-                        translator.restoreLanguage();
-                        translator.restoreUrl();
+                        lang = $window.navigator.userLanguage || $window.navigator.language;
                     }
-                    return 'languages/dictionary-' + translator.language + '.json';
+                    return translator.saveUrl(lang);
                 },
                 getDictionary: function(value) {
                     var dictionaryValue = '';
